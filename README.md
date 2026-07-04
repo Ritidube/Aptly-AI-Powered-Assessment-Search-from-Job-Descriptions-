@@ -1,5 +1,4 @@
 ---
-<<<<<<< HEAD
 title: SHL Assessment Recommender
 emoji: 🧪
 colorFrom: blue
@@ -73,14 +72,3 @@ Response:
 uvicorn app.main:app --reload
 python tests/replay_eval.py
 ```
-=======
-title: Shl Assessment Recommender
-emoji: 😻
-colorFrom: pink
-colorTo: green
-sdk: docker
-pinned: false
----
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
->>>>>>> 4a2583a78501fa36ad47afb69402f7589d39a5d9
