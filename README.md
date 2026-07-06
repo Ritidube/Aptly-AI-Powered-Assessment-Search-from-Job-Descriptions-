@@ -90,5 +90,3 @@ Response:
 uvicorn app.main:app --reload
 python tests/replay_eval.py
 ```
-
-Current result on the 10 provided sample conversations: **Mean Recall@10 = 0.67** (27 correct, 16 missing, 69 extra across all traces). Precision is weaker than recall — the retriever tends to pad shortlists out to 10 items with plausible-but-generic matches even when only 2–5 are truly relevant. See the approach document for the full breakdown and next steps (relevance-score floor, a small domain synonym table).
