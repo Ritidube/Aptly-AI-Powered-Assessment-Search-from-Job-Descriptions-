@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SHL Assessment Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+        <circle cx="20" cy="20" r="10.5" fill="none" stroke="var(--accent-2)" stroke-width="1.6"/>
+        <circle cx="20" cy="20" r="2.4" fill="var(--accent)"/>
+        <line x1="20" y1="3" x2="20" y2="9.3" stroke="var(--accent)" stroke-width="1.6"/>
+        <line x1="20" y1="30.7" x2="20" y2="37" stroke="var(--accent-2)" stroke-width="1.6"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-title">Assessment Recommender</span>
+        <span class="brand-sub">catalog-grounded &middot; hybrid retrieval</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button id="configToggle" class="ghost-btn" title="API settings">Endpoint</button>
+      <div class="status" id="statusPill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusLabel">checking</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="config-panel" id="configPanel" hidden>
+    <label>
+      API base URL
+      <input id="apiBaseInput" type="text" placeholder="https://your-backend.example.com" />
+    </label>
+    <label>
+      API key <span class="config-hint-inline">(only if the backend has AUTH_ENABLED=true)</span>
+      <input id="apiKeyInput" type="password" placeholder="Leave blank if the backend doesn't require one" autocomplete="off" />
+    </label>
+    <button id="configSave" class="primary-btn">Save &amp; recheck</button>
+    <p class="config-hint">Stored only in this browser tab (never in this file). Must point at a server exposing <code>GET /health</code> and <code>POST /chat</code>.</p>
+  </div>
+
+  <main class="chat-shell">
+    <section class="chat-log" id="chatLog" aria-live="polite">
+      <div class="msg msg-system">
+        <div class="msg-bubble">
+          <p>Tell me who you're hiring for &mdash; role, level, and any must-have skills or constraints (language, remote/on-site, seniority). I'll ask if I need one more detail, then shortlist real SHL assessments. You can also say things like "compare X and Y" or "remove the second one, add a coding test."</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="composer-dock">
+      <div class="quick-row" id="quickRow">
+        <button class="quick-chip" data-fill="I need to hire a mid-level backend engineer, remote, must know Python and SQL.">Backend engineer</button>
+        <button class="quick-chip" data-fill="Looking for a bilingual contact centre agent, English and French phone support.">Contact centre role</button>
+        <button class="quick-chip" data-fill="Compare OPQ32r and SHL Verify Interactive.">Compare two assessments</button>
+      </div>
+
+      <form class="composer" id="composerForm">
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Describe the role, or ask to compare / refine…"
+          autocomplete="off"
+        ></textarea>
+        <button type="submit" class="send-btn" id="sendBtn" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 11.5L20.5 3l-7 18-3-8-7.5-1.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        </button>
+      </form>
+      <p class="composer-hint">Enter to send &middot; Shift+Enter for a new line</p>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.8/purify.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

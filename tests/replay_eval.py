@@ -147,6 +147,58 @@ def recall_at_10(expected: List[str], predicted: List[str]) -> float:
 # Replay
 # ---------------------------------------------------------------------
 
+# def run_trace(path: Path) -> Dict:
+#     text = path.read_text(encoding="utf-8")
+#     user_turns = extract_user_turns(text)
+#     expected = extract_expected_names(text)
+
+#     print(f"\n=== {path.name} ===")
+#     history = []
+#     predicted: List[str] = []
+
+#     for turn in user_turns:
+#         history.append({"role": "user", "content": turn})
+#         resp = requests.post(API_URL, json={"messages": history}, timeout=30)
+#         # data = resp.json()
+#         data = resp.json()
+#         print("API Response:", data)
+
+#         recs = data.get("recommendations") or []
+#         print(f"USER: {turn}")
+#         print(f"BOT : {data['reply']}")
+#         print(f"     recs={len(recs)} end={data.get('end_of_conversation')}")
+
+#         if recs:
+#             predicted = [r["name"] for r in recs]  # last non-empty turn wins
+
+#         history.append({"role": "assistant", "content": data["reply"]})
+
+#     recall = recall_at_10(expected, predicted)
+#     expected_l = {e.lower() for e in expected}
+#     predicted_l = {p.lower() for p in predicted[:10]}
+#     correct = [e for e in expected if e.lower() in predicted_l]
+#     missing = [e for e in expected if e.lower() not in predicted_l]
+#     extra = [p for p in predicted if p.lower() not in expected_l]
+
+#     print(f"\nExpected:")
+#     for e in expected:
+#         print(f"  - {e}")
+#     print(f"Predicted:")
+#     for p in predicted:
+#         print(f"  - {p}")
+#     if missing:
+#         print(f"Missing: {', '.join(missing)}")
+#     if extra:
+#         print(f"Extra: {', '.join(extra)}")
+#     print(f"Recall@10 = {recall:.2f}")
+
+#     return {
+#         "id": path.stem,
+#         "recall": recall,
+#         "correct": len(correct),
+#         "missing": len(missing),
+#         "extra": len(extra),
+#     }
 def run_trace(path: Path) -> Dict:
     text = path.read_text(encoding="utf-8")
     user_turns = extract_user_turns(text)
@@ -156,20 +208,46 @@ def run_trace(path: Path) -> Dict:
     history = []
     predicted: List[str] = []
 
+    headers = {
+        "X-API-Key": "my-test-secret-123"   # Replace with your actual API key
+    }
+
     for turn in user_turns:
         history.append({"role": "user", "content": turn})
-        resp = requests.post(API_URL, json={"messages": history}, timeout=30)
+
+        resp = requests.post(
+            API_URL,
+            json={"messages": history},
+            headers=headers,
+            timeout=30,
+        )
+
         data = resp.json()
+        print("API Response:", data)
+
+        # If the API returned an error, print it and stop this conversation
+        if resp.status_code != 200:
+            print(f"API Error ({resp.status_code}): {data}")
+            break
+
+        reply = (
+            data.get("reply")
+            or data.get("response")
+            or data.get("answer")
+            or data.get("message")
+            or ""
+        )
 
         recs = data.get("recommendations") or []
+
         print(f"USER: {turn}")
-        print(f"BOT : {data['reply']}")
+        print(f"BOT : {reply}")
         print(f"     recs={len(recs)} end={data.get('end_of_conversation')}")
 
         if recs:
-            predicted = [r["name"] for r in recs]  # last non-empty turn wins
+            predicted = [r["name"] for r in recs]
 
-        history.append({"role": "assistant", "content": data["reply"]})
+        history.append({"role": "assistant", "content": reply})
 
     recall = recall_at_10(expected, predicted)
     expected_l = {e.lower() for e in expected}
@@ -178,16 +256,20 @@ def run_trace(path: Path) -> Dict:
     missing = [e for e in expected if e.lower() not in predicted_l]
     extra = [p for p in predicted if p.lower() not in expected_l]
 
-    print(f"\nExpected:")
+    print("\nExpected:")
     for e in expected:
         print(f"  - {e}")
-    print(f"Predicted:")
+
+    print("Predicted:")
     for p in predicted:
         print(f"  - {p}")
+
     if missing:
         print(f"Missing: {', '.join(missing)}")
+
     if extra:
         print(f"Extra: {', '.join(extra)}")
+
     print(f"Recall@10 = {recall:.2f}")
 
     return {
@@ -197,7 +279,6 @@ def run_trace(path: Path) -> Dict:
         "missing": len(missing),
         "extra": len(extra),
     }
-
 
 if __name__ == "__main__":
     results = [run_trace(md_file) for md_file in sorted(TRACES_DIR.glob("C*.md"))]
