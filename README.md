@@ -3,7 +3,7 @@
 Aptly is a full-stack recommendation system that maps a job description or a short conversation to the right SHL psychometric assessment, replacing manual search through a 500+ item catalog with a ranked, catalog-grounded shortlist a recruiter can act on immediately.
 
 **Live:** https://aptly-recommender.duckdns.org
-**Stack:** FastAPI · PostgreSQL · Redis · FAISS · Sentence-Transformers · Gemini · Docker · Nginx
+Stack: FastAPI · PostgreSQL · Redis · FAISS · Sentence-Transformers · Google Gemini API · Docker · Nginx · Microsoft Azure
 
 ---
 ## Try the live demo
