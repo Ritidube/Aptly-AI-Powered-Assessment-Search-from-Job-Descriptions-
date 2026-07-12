@@ -7,7 +7,7 @@ const CONFIG = {
   // Default backend URL. Overridden at runtime by the "Endpoint" panel,
   // which saves to localStorage so you don't have to edit this file per-deploy.
   // DEFAULT_API_BASE: "http://localhost:8000",
-  DEFAULT_API_BASE = "/api",
+  DEFAULT_API_BASE: "/api",
 
   // Maps a Recommendation.test_type letter code (from the catalog) to a
   // human-readable label shown on each rec card. SHL's public test_type
